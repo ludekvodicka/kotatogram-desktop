@@ -46,6 +46,10 @@ class PromoSuggestions;
 class Passkeys;
 } // namespace Data
 
+namespace Kotato {
+class HiddenSenders;
+} // namespace Kotato
+
 namespace Settings {
 class FaqSuggestions;
 class RecentSearches;
@@ -168,6 +172,9 @@ public:
 	}
 	[[nodiscard]] Data::Factchecks &factchecks() const {
 		return *_factchecks;
+	}
+	[[nodiscard]] Kotato::HiddenSenders &hiddenSenders() const {
+		return *_hiddenSenders;
 	}
 	[[nodiscard]] Data::LocationPickers &locationPickers() const {
 		return *_locationPickers;
@@ -326,6 +333,7 @@ private:
 	const std::unique_ptr<Data::TopPeers> _topGuestChatBots;
 	const std::unique_ptr<Data::RecentInlineBots> _recentInlineBots;
 	const std::unique_ptr<Data::Factchecks> _factchecks;
+	const std::unique_ptr<Kotato::HiddenSenders> _hiddenSenders;
 	const std::unique_ptr<Data::LocationPickers> _locationPickers;
 	const std::unique_ptr<Data::Credits> _credits;
 	const std::unique_ptr<Data::PromoSuggestions> _promoSuggestions;

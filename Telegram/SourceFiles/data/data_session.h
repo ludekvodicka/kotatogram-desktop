@@ -419,6 +419,11 @@ public:
 	void requestItemShowHighlight(not_null<HistoryItem*> item);
 	[[nodiscard]] rpl::producer<not_null<HistoryItem*>> itemShowHighlightRequest() const;
 	void requestItemViewRefresh(not_null<const HistoryItem*> item);
+	// Calls back on a snapshot of the loaded messages of one peer,
+	// so callbacks may refresh views or fire changes safely.
+	void enumerateMessages(
+		PeerId peerId,
+		Fn<void(not_null<HistoryItem*>)> callback) const;
 	[[nodiscard]] rpl::producer<not_null<const HistoryItem*>> itemViewRefreshRequest() const;
 	void requestItemTextRefresh(not_null<HistoryItem*> item);
 	void requestUnreadReactionsAnimation(not_null<HistoryItem*> item);

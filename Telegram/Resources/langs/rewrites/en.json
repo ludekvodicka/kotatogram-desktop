@@ -1,4 +1,8 @@
 {
+	"ktg_context_hide_messages": "Hide user's messages",
+	"ktg_context_unhide_messages": "Show user's messages",
+	"ktg_context_collapse_message": "Collapse message",
+	"ktg_hidden_message": "hidden message",
 	"ktg_settings_bypass_copy_restriction": "Bypass copy and save restrictions",
 	"ktg_intro_about": "Welcome to unofficial messaging app\nbased on Telegram Desktop.",
 	"ktg_about_text1": "Experimental unofficial {tdesktop_link} fork.",

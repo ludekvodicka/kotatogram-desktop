@@ -2137,6 +2137,9 @@ void Element::refreshDataId() {
 }
 
 bool Element::computeIsAttachToPrevious(not_null<Element*> previous) {
+	if ((_flags | previous->_flags) & Flag::CollapsedSender) {
+		return false;
+	}
 	const auto mayBeAttached = [](not_null<Element*> view) {
 		const auto item = view->data();
 		return !item->isService()

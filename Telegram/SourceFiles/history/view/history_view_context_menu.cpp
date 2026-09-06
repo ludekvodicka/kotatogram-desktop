@@ -8,6 +8,8 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "history/view/history_view_context_menu.h"
 
 #include "kotato/kotato_copy_restriction.h"
+#include "kotato/kotato_hidden_senders.h"
+#include "kotato/kotato_lang.h"
 #include "api/api_attached_stickers.h"
 #include "api/api_editing.h"
 #include "api/api_global_privacy.h"
@@ -1036,6 +1038,37 @@ bool AddSelectMessageAction(
 	return true;
 }
 
+void AddHiddenSenderActions(
+		not_null<Ui::PopupMenu*> menu,
+		const ContextMenuRequest &request,
+		not_null<ListWidget*> list) {
+	const auto item = request.item;
+	if (!item || item->isService() || item->out() || item->from()->isSelf()) {
+		return;
+	}
+	const auto peer = item->history()->peer;
+	if (!peer->isChat() && !peer->isMegagroup()) {
+		return;
+	}
+	const auto session = &item->history()->session();
+	const auto senders = &session->hiddenSenders();
+	const auto sender = item->from();
+	const auto itemId = item->fullId();
+	const auto hidden = senders->isHidden(peer, sender);
+	menu->addAction((hidden
+		? ktr("ktg_context_unhide_messages")
+		: ktr("ktg_context_hide_messages")), [=] {
+		senders->toggleHidden(peer, sender);
+	}, (hidden ? &st::menuIconShowInChat : &st::menuIconUserHide));
+	if (hidden && senders->isExpanded(itemId)) {
+		menu->addAction(ktr("ktg_context_collapse_message"), [=] {
+			if (const auto item = session->data().message(itemId)) {
+				senders->toggleExpanded(item);
+			}
+		}, &st::menuIconCollapse);
+	}
+}
+
 void AddSelectionAction(
 		not_null<Ui::PopupMenu*> menu,
 		const ContextMenuRequest &request,
@@ -1066,6 +1099,7 @@ void AddMessageActions(
 	AddDeleteAction(menu, request, list);
 	AddDownloadFilesAction(menu, request, list);
 	AddReportAction(menu, request, list);
+	AddHiddenSenderActions(menu, request, list);
 	AddSelectionAction(menu, request, list);
 	AddRescheduleAction(menu, request, list);
 }

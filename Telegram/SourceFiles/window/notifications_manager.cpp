@@ -15,6 +15,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "media/audio/media_audio_track.h"
 #include "media/audio/media_audio.h"
 #include "mtproto/mtproto_config.h"
+#include "kotato/kotato_hidden_senders.h"
 #include "history/history.h"
 #include "history/history_item_components.h"
 #include "history/view/history_view_chat_section.h"
@@ -300,6 +301,8 @@ System::SkipState System::skipNotification(
 	if (!thread
 		|| !thread->currentNotification()
 		|| (messageType && item->skipNotification())
+		|| (messageType
+			&& item->history()->session().hiddenSenders().isCollapsed(item))
 		|| (type == Data::ItemNotificationType::Reaction
 			&& skipSentNotification(item, _sentReactionNotifications))
 		|| (type == Data::ItemNotificationType::PollVote

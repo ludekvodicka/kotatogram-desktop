@@ -353,6 +353,9 @@ const std::map<QString, Definition, std::greater<QString>> DefinitionMap {
 	{ "folders/local", {
 		.scope = SettingScope::Account,
 		.type = SettingType::QJsonArraySetting, }},
+	{ "hidden_senders", {
+		.scope = SettingScope::Account,
+		.type = SettingType::QJsonArraySetting, }},
 	{ "bypass_copy_restriction", {
 		.type = SettingType::BoolSetting,
 		.defaultValue = true, }},

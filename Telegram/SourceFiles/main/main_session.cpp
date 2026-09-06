@@ -31,6 +31,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "storage/storage_facade.h"
 #include "data/components/credits.h"
 #include "data/components/factchecks.h"
+#include "kotato/kotato_hidden_senders.h"
 #include "data/components/gift_auctions.h"
 #include "data/components/location_pickers.h"
 #include "data/components/passkeys.h"
@@ -128,6 +129,7 @@ Session::Session(
 	Data::TopPeerType::BotGuestChat))
 , _recentInlineBots(std::make_unique<Data::RecentInlineBots>(this))
 , _factchecks(std::make_unique<Data::Factchecks>(this))
+, _hiddenSenders(std::make_unique<Kotato::HiddenSenders>(this))
 , _locationPickers(std::make_unique<Data::LocationPickers>())
 , _credits(std::make_unique<Data::Credits>(this))
 , _promoSuggestions(std::make_unique<Data::PromoSuggestions>(this, [=] {

@@ -8,6 +8,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "history/history_inner_widget.h"
 
 #include "kotato/kotato_copy_restriction.h"
+#include "kotato/kotato_hidden_senders.h"
 #include "kotato/kotato_settings.h"
 #include "kotato/kotato_lang.h"
 #include "api/api_polls.h"
@@ -2951,6 +2952,27 @@ void HistoryInner::showContextMenu(QContextMenuEvent *e, bool showFromTouch) {
 						: Dialogs::Key(),
 						item->from());
 			}, &st::menuIconSearch);
+		}
+		if ((peer->isChat() || peer->isMegagroup())
+			&& !item->isService()
+			&& !item->out()
+			&& !item->from()->isSelf()) {
+			const auto session = &item->history()->session();
+			const auto senders = &session->hiddenSenders();
+			const auto sender = item->from();
+			const auto hidden = senders->isHidden(peer, sender);
+			_menu->addAction((hidden
+				? ktr("ktg_context_unhide_messages")
+				: ktr("ktg_context_hide_messages")), [=] {
+				senders->toggleHidden(peer, sender);
+			}, (hidden ? &st::menuIconShowInChat : &st::menuIconUserHide));
+			if (hidden && senders->isExpanded(itemId)) {
+				_menu->addAction(ktr("ktg_context_collapse_message"), [=] {
+					if (const auto item = session->data().message(itemId)) {
+						senders->toggleExpanded(item);
+					}
+				}, &st::menuIconCollapse);
+			}
 		}
 		if (!item->isService()
 			&& peerIsChannel(itemId.peer)

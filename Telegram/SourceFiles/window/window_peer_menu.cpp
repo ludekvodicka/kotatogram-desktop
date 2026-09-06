@@ -7,6 +7,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 */
 #include "window/window_peer_menu.h"
 
+#include "kotato/kotato_hidden_senders.h"
 #include "kotato/kotato_lang.h"
 #include "kotato/kotato_settings.h"
 #include "base/call_delayed.h"
@@ -4329,6 +4330,16 @@ void FillSenderUserpicMenu(
 		addAction(tr::lng_context_search_from(tr::now), [=] {
 			controller->searchInChat(searchInEntry, peer);
 		}, &st::menuIconSearch);
+	}
+
+	if (groupPeer && groupPeer != peer && !peer->isSelf()) {
+		const auto senders = &controller->session().hiddenSenders();
+		const auto hidden = senders->isHidden(groupPeer, peer);
+		addAction((hidden
+			? ktr("ktg_context_unhide_messages")
+			: ktr("ktg_context_hide_messages")), [=] {
+			senders->toggleHidden(groupPeer, peer);
+		}, (hidden ? &st::menuIconShowInChat : &st::menuIconUserHide));
 	}
 
 	if (const auto user = peer->asUser()) {

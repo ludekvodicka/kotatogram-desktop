@@ -2097,6 +2097,23 @@ void Session::requestItemViewRefresh(not_null<const HistoryItem*> item) {
 	_itemViewRefreshRequest.fire_copy(item);
 }
 
+void Session::enumerateMessages(
+		PeerId peerId,
+		Fn<void(not_null<HistoryItem*>)> callback) const {
+	const auto list = messagesList(peerId);
+	if (!list) {
+		return;
+	}
+	auto items = std::vector<not_null<HistoryItem*>>();
+	items.reserve(list->size());
+	for (const auto &[id, item] : *list) {
+		items.push_back(item);
+	}
+	for (const auto &item : items) {
+		callback(item);
+	}
+}
+
 rpl::producer<not_null<const HistoryItem*>> Session::itemViewRefreshRequest() const {
 	return _itemViewRefreshRequest.events();
 }

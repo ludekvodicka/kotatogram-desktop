@@ -7,6 +7,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 */
 #include "history/history_item.h"
 
+#include "kotato/kotato_hidden_senders.h"
 #include "kotato/kotato_lang.h"
 #include "api/api_premium.h"
 #include "kotato/kotato_lang.h"
@@ -16,6 +17,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "calls/calls_instance.h" // Core::App().calls().joinGroupCall.
 #include "history/view/history_view_item_preview.h"
 #include "history/view/history_view_message.h"
+#include "history/view/history_view_collapsed_message.h"
 #include "history/view/history_view_service_message.h"
 #include "history/view/media/history_view_media_grouped.h"
 #include "history/history_item_components.h"
@@ -1590,6 +1592,12 @@ std::unique_ptr<HistoryView::Element> HistoryItem::createView(
 		HistoryView::Element *replacing) {
 	if (isService()) {
 		return std::make_unique<HistoryView::Service>(
+			delegate,
+			this,
+			replacing);
+	} else if (delegate->elementContext() != HistoryView::Context::AdminLog
+		&& _history->session().hiddenSenders().isCollapsed(this)) {
+		return std::make_unique<HistoryView::CollapsedMessage>(
 			delegate,
 			this,
 			replacing);
@@ -4498,7 +4506,9 @@ ItemPreview HistoryItem::toPreview(ToPreviewOptions options) const {
 	}
 
 	auto result = [&]() -> ItemPreview {
-		if (_media) {
+		if (_history->session().hiddenSenders().isCollapsed(this)) {
+			return { .text = { ktr("ktg_hidden_message") } };
+		} else if (_media) {
 			return _media->toPreview(options);
 		} else if (!emptyText()) {
 			return {

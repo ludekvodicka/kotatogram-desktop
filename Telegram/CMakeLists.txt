@@ -974,6 +974,8 @@ PRIVATE
     history/view/history_view_chat_preview.h
     history/view/history_view_chat_section.cpp
     history/view/history_view_chat_section.h
+    history/view/history_view_collapsed_message.cpp
+    history/view/history_view_collapsed_message.h
     history/view/history_view_contact_status.cpp
     history/view/history_view_contact_status.h
     history/view/history_view_context_menu.cpp
@@ -1313,6 +1315,8 @@ PRIVATE
     kotato/boxes/kotato_unpin_box.h
     kotato/kotato_copy_restriction.cpp
     kotato/kotato_copy_restriction.h
+    kotato/kotato_hidden_senders.cpp
+    kotato/kotato_hidden_senders.h
     kotato/kotato_lang.cpp
     kotato/kotato_lang.h
     kotato/kotato_radius.cpp
