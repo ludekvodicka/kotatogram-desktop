@@ -14,6 +14,10 @@ name: Kotatogram Release (Windows x64).
 #   - builds CMAKE_CONFIGURATION_TYPES=Release instead of Debug,
 #   - uses real API credentials instead of TDESKTOP_API_TEST,
 #   - disables the auto-updater, so the binary never replaces itself.
+#
+# CMAKE_POLICY_DEFAULT_CMP0218 is needed because run_cmake.py appends -Werror=dev after
+# our arguments, and the CMake on the runner turns the unset CMP0218 in cmark_gfm into
+# a configure error.
 
 on:
   workflow_dispatch:
@@ -168,6 +172,7 @@ jobs:
           cd %userprofile%\TBuild\%REPO_NAME%\Telegram
 
           call configure.bat x64 qt6 ^
+          -D CMAKE_POLICY_DEFAULT_CMP0218=NEW ^
           -D TDESKTOP_API_ID=%API_ID% ^
           -D TDESKTOP_API_HASH=%API_HASH% ^
           -D CMAKE_CONFIGURATION_TYPES=Release ^
