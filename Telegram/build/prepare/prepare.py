@@ -1425,9 +1425,8 @@ depends:python/Scripts/activate.bat
     ninja -C out/Debug%FolderPostfix% common crash_generation_client exception_handler
 release:
     ninja -C out/Release%FolderPostfix% common crash_generation_client exception_handler
-    cd tools\\windows\\dump_syms
-    gyp dump_syms.gyp --format=msvs
-    msbuild -m dump_syms.vcxproj /property:Configuration=Release /property:Platform="x64" %ToolsetProp%
+    # dump_syms is a release packaging tool, it is not linked into the app.
+    # Its gyp project needs ATL headers that the pinned 14.44 toolset lacks on CI.
 win:
     deactivate
 mac:
