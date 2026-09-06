@@ -7,6 +7,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 */
 #include "iv/iv_instance.h"
 
+#include "kotato/kotato_copy_restriction.h"
 #include "apiwrap.h"
 #include "base/platform/base_platform_info.h"
 #include "base/unixtime.h"
@@ -152,7 +153,7 @@ struct LocalMarkdownTarget {
 
 [[nodiscard]] bool CanShareMarkdownItem(not_null<HistoryItem*> item) {
 	const auto peer = item->history()->peer;
-	return peer->allowsForwarding() && !item->forbidsForward();
+	return !Kotato::HasCopyRestriction(peer, item);
 }
 
 [[nodiscard]] QString RichMessageKey(FullMsgId itemId) {

@@ -7,6 +7,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 */
 #include "history/view/history_view_list_widget.h"
 
+#include "kotato/kotato_copy_restriction.h"
 #include "kotato/kotato_settings.h"
 #include "base/unixtime.h"
 #include "base/qt/qt_key_modifiers.h"
@@ -1762,13 +1763,13 @@ bool ListWidget::hasCopyRestrictionForSelected() const {
 		return true;
 	}
 	if (_selected.empty()) {
-		if (_selectedTextItem && _selectedTextItem->forbidsForward()) {
+		if (_selectedTextItem && hasCopyRestriction(_selectedTextItem)) {
 			return true;
 		}
 	}
 	for (const auto &[itemId, selection] : _selected) {
 		if (const auto item = session().data().message(itemId)) {
-			if (item->forbidsForward()) {
+			if (hasCopyRestriction(item)) {
 				return true;
 			}
 		}
@@ -5455,7 +5456,7 @@ void ConfirmSendNowSelectedItems(not_null<ListWidget*> widget) {
 CopyRestrictionType CopyRestrictionTypeFor(
 		not_null<PeerData*> peer,
 		HistoryItem *item) {
-	return (peer->allowsForwarding() && (!item || !item->forbidsForward()))
+	return !Kotato::HasCopyRestriction(peer, item)
 		? CopyRestrictionType::None
 		: peer->isUser()
 		? CopyRestrictionType::User
@@ -5467,11 +5468,7 @@ CopyRestrictionType CopyRestrictionTypeFor(
 CopyRestrictionType CopyMediaRestrictionTypeFor(
 		not_null<PeerData*> peer,
 		not_null<HistoryItem*> item) {
-	if (const auto all = CopyRestrictionTypeFor(peer, item)
-		; all != CopyRestrictionType::None) {
-		return all;
-	}
-	return !item->forbidsSaving()
+	return !Kotato::HasCopyMediaRestriction(peer, item)
 		? CopyRestrictionType::None
 		: peer->isUser()
 		? CopyRestrictionType::User

@@ -7,6 +7,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 */
 #include "history/history_inner_widget.h"
 
+#include "kotato/kotato_copy_restriction.h"
 #include "kotato/kotato_settings.h"
 #include "kotato/kotato_lang.h"
 #include "api/api_polls.h"
@@ -807,7 +808,8 @@ void HistoryInner::setupSwipeReplyAndBack() {
 bool HistoryInner::hasSelectRestriction() const {
 	if (session().frozen()) {
 		return true;
-	} else if (!_sharingDisallowed.current()) {
+	} else if (!_sharingDisallowed.current()
+		|| Kotato::CopyRestrictionBypassed()) {
 		return false;
 	} else if (const auto chat = _peer->asChat()) {
 		return !chat->canDeleteMessages();
@@ -3752,12 +3754,12 @@ void HistoryInner::showContextMenu(QContextMenuEvent *e, bool showFromTouch) {
 }
 
 bool HistoryInner::hasCopyRestriction(HistoryItem *item) const {
-	return !_peer->allowsForwarding() || (item && item->forbidsForward());
+	return Kotato::HasCopyRestriction(_peer, item);
 }
 
 bool HistoryInner::hasCopyMediaRestriction(
 		not_null<HistoryItem*> item) const {
-	return hasCopyRestriction(item) || item->forbidsSaving();
+	return Kotato::HasCopyMediaRestriction(_peer, item);
 }
 
 bool HistoryInner::showCopyRestriction(HistoryItem *item) {
@@ -3789,13 +3791,13 @@ bool HistoryInner::hasCopyRestrictionForSelected() const {
 		return true;
 	}
 	for (const auto &item : _selected) {
-		if (item && item->forbidsForward()) {
+		if (item && hasCopyRestriction(item)) {
 			return true;
 		}
 	}
 	return hasSelectedText()
 		&& _selectedTextItem
-		&& _selectedTextItem->forbidsForward();
+		&& hasCopyRestriction(_selectedTextItem);
 }
 
 bool HistoryInner::showCopyRestrictionForSelected() {

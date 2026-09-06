@@ -7,6 +7,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 */
 #include "menu/menu_item_download_files.h"
 
+#include "kotato/kotato_copy_restriction.h"
 #include "base/base_file_utilities.h"
 #include "base/unixtime.h"
 #include "core/application.h"
@@ -43,7 +44,8 @@ using Photos = std::vector<std::pair<not_null<PhotoData*>, FullMsgId>>;
 		HistoryItem *item,
 		Documents &documents,
 		Photos &photos) {
-	if (item && !item->forbidsForward()) {
+	if (item
+		&& !Kotato::HasCopyMediaRestriction(item->history()->peer, item)) {
 		if (const auto media = item->media()) {
 			if (const auto photo = media->photo()) {
 				photos.emplace_back(photo, item->fullId());

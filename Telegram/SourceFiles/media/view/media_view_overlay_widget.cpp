@@ -7,6 +7,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 */
 #include "media/view/media_view_overlay_widget.h"
 
+#include "kotato/kotato_copy_restriction.h"
 #include "kotato/kotato_lang.h"
 #include "apiwrap.h"
 #include "api/api_attached_stickers.h"
@@ -1264,8 +1265,12 @@ bool OverlayWidget::hasCopyMediaRestriction(bool skipPremiumCheck) const {
 			? !story->canDownloadIfPremium()
 			: !story->canDownloadChecked();
 	}
-	return (_history && !_history->peer->allowsForwarding())
-		|| (_message && _message->forbidsSaving());
+	if (_message) {
+		return Kotato::HasCopyMediaRestriction(
+			_message->history()->peer,
+			_message);
+	}
+	return _history && Kotato::HasCopyRestriction(_history->peer);
 }
 
 bool OverlayWidget::showCopyMediaRestriction(bool skipPRemiumCheck) {

@@ -7,6 +7,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 */
 #include "data/data_peer.h"
 
+#include "kotato/kotato_copy_restriction.h"
 #include "kotato/kotato_radius.h"
 #include "api/api_sensitive_content.h"
 #include "data/data_user.h"
@@ -789,7 +790,9 @@ bool PeerData::canEditMessagesIndefinitely() const {
 }
 
 bool PeerData::canExportChatHistory() const {
-	if (isRepliesChat() || isVerifyCodes() || !allowsForwarding()) {
+	if (isRepliesChat()
+		|| isVerifyCodes()
+		|| Kotato::HasCopyRestriction(this)) {
 		return false;
 	} else if (const auto channel = asChannel()) {
 		if (!channel->amIn() && channel->invitePeekExpires()) {

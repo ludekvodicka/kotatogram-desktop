@@ -7,6 +7,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 */
 #include "info/media/info_media_provider.h"
 
+#include "kotato/kotato_copy_restriction.h"
 #include "apiwrap.h"
 #include "info/media/info_media_widget.h"
 #include "info/media/info_media_list_section.h"
@@ -82,7 +83,7 @@ Type Provider::type() {
 bool Provider::hasSelectRestriction() {
 	if (_peer->session().frozen()) {
 		return true;
-	} else if (_peer->allowsForwarding()) {
+	} else if (!Kotato::HasCopyRestriction(_peer)) {
 		return false;
 	} else if (const auto chat = _peer->asChat()) {
 		return !chat->canDeleteMessages();

@@ -7,6 +7,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 */
 #include "history/view/history_view_context_menu.h"
 
+#include "kotato/kotato_copy_restriction.h"
 #include "api/api_attached_stickers.h"
 #include "api/api_editing.h"
 #include "api/api_global_privacy.h"
@@ -1947,7 +1948,7 @@ void AddPollActions(
 					item->history()->peer,
 					MsgId(),
 					std::move(text),
-					item->forbidsForward()));
+					Kotato::HasCopyRestriction(item->history()->peer, item)));
 			}, &st::menuIconTranslate);
 		}
 	}
@@ -2537,7 +2538,7 @@ void AddSelectRestrictionAction(
 		not_null<HistoryItem*> item,
 		bool addIcon) {
 	const auto peer = item->history()->peer;
-	if ((peer->allowsForwarding() && !item->forbidsForward())
+	if (!Kotato::HasCopyRestriction(peer, item)
 		|| item->isSponsored()) {
 		return;
 	}
