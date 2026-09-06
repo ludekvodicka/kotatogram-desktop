@@ -8,6 +8,8 @@ https://github.com/kotatogram/kotatogram-desktop/blob/dev/LEGAL
 #include "kotato/kotato_hidden_senders.h"
 
 #include "kotato/kotato_settings.h"
+#include "data/data_channel.h"
+#include "data/data_chat.h"
 #include "data/data_peer.h"
 #include "data/data_session.h"
 #include "history/history.h"
