@@ -131,11 +131,12 @@ jobs:
             ${{ env.CACHE_PREFIX }}-
 
       - name: Prune old caches.
+        if: inputs.phase == 'libs'
         shell: bash
         run: |
-          # The repository cache limit is 10 GB. The restore above already put
-          # the files on disk, so dropping the stored entries frees the whole
-          # quota for the entry this run saves.
+          # The repository cache limit is 10 GB. The restore above already put the files
+          # on disk, so dropping the stored entries frees the quota for the entry this run
+          # saves. Only in the libs phase: a phase that does not save must not delete.
           gh cache delete --all --repo "$GITHUB_REPOSITORY" || true
 
       - name: Libraries.
@@ -154,7 +155,7 @@ jobs:
         run: Get-PSDrive C | Select-Object Used,Free
 
       - name: Save libraries cache.
-        if: always() && inputs.phase == 'libs'
+        if: always()
         uses: actions/cache/save@v5
         with:
           path: |
