@@ -1636,7 +1636,8 @@ win:
 
     SET CONFIGURATIONS=-debug
 release:
-    SET CONFIGURATIONS=-debug-and-release
+    SET CONFIGURATIONS=-release
+    # Release only: this fork builds Kotatogram in Release, Debug libraries are dead weight.
 win:
     """ + removeDir('"%LIBS_DIR%\\Qt' + qt + '"') + """
     SET MOZJPEG_DIR=%LIBS_DIR%\\mozjpeg
@@ -1684,8 +1685,6 @@ win:
         -D LCMS2_INCLUDE_DIR="%LCMS2_DIR%\\include" ^
         -D LCMS2_LIBRARIES="%LCMS2_DIR%\\out\\Release\\src\\liblcms2.a"
 
-    cmake --build . --config Debug
-    cmake --install . --config Debug
     cmake --build .
     cmake --install .
 """)
@@ -1712,7 +1711,6 @@ win:
         -DTG_OWT_LIBVPX_INCLUDE_PATH=$LIBVPX_PATH \
         -DTG_OWT_OPENH264_INCLUDE_PATH=$OPENH264_PATH \
         -DTG_OWT_FFMPEG_INCLUDE_PATH=$FFMPEG_PATH
-    cmake --build out --config Debug
 release:
     cmake --build out --config Release
 mac:
@@ -1874,7 +1872,6 @@ win:
         -DTD_ENABLE_MULTI_PROCESSOR_COMPILATION=ON ^
         -DTD_E2E_ONLY=ON ^
         ../..
-    cmake --build . --config Debug
 release:
     cd ..
     mkdir Release
