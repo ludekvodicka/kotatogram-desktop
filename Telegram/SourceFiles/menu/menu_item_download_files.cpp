@@ -8,6 +8,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "menu/menu_item_download_files.h"
 
 #include "kotato/kotato_copy_restriction.h"
+#include "history/history.h"
 #include "base/base_file_utilities.h"
 #include "base/unixtime.h"
 #include "core/application.h"
