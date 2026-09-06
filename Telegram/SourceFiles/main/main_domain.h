@@ -34,11 +34,7 @@ public:
 
 	static constexpr auto kMaxAccountsWarn = 3;
 	static constexpr auto kPremiumMaxAccounts = 6;
-#ifdef ARCH_CPU_64_BITS
-	static constexpr auto kMaxAccounts = 100;
-#else
-	static constexpr auto kMaxAccounts = 10;
-#endif
+	static constexpr auto kMaxAccounts = 20;
 
 	explicit Domain(const QString &dataName);
 	~Domain();
