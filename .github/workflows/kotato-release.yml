@@ -36,7 +36,7 @@ jobs:
   windows:
     name: Windows x64 Release
     runs-on: windows-latest
-    timeout-minutes: 350
+    timeout-minutes: 355
 
     env:
       PREPARE_PATH: "Telegram/build/prepare/prepare.py"
@@ -135,7 +135,7 @@ jobs:
           gh cache delete --all --repo "$GITHUB_REPOSITORY" || true
 
       - name: Libraries.
-        timeout-minutes: 270
+        timeout-minutes: 300
         run: |
           %TBUILD%\%REPO_NAME%\Telegram\build\prepare\win.bat silent qt6
 
